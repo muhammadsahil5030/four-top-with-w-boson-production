@@ -1,8 +1,4 @@
-//root -l examples/ttbarH_bg_codes/fullyHadronic_kinematics_BDT.C'("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_pp_ttxH_bg_tttxtxwm/Events/run_01_decayed_1/tag_1_delphes_CMS_events.root")'
-
-//root -l examples/ttbarH_bg_codes/fullyHadronic_kinematics_BDT.C'("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_pp_ttxwm_bg_tttxtxwm/Events/run_01_decayed_1/tag_1_delphes_CMS_events.root")'
-
-//root -l examples/ttbarH_bg_codes/fullyHadronic_kinematics_BDT.C'("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_pp_ttxz_bg_tttxtxwm/Events/run_01_decayed_1/tag_1_delphes_CMS_events.root")'
+//root -l examples/4twminus_codes/fullyHadronic_kinematics_BDT.C'("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_tttxtx_wminus_fullyHadronic_signal/Events/run_01_decayed_1/tag_1_delphes_CMS_events.root")'
 
 #include "TH1.h"
 #include "TSystem.h"
@@ -42,72 +38,74 @@ void fullyHadronic_kinematics_BDT(const char *inputFile)
   TClonesArray *branchMissingET = treeReader->UseBranch("MissingET");
 
   // Book histograms for PT distributions
-  Jet *jet[6]; // 4 leading Bjets
+  Jet *jet[10]; // 4 leading Bjets
   Electron *electron[4];
   Muon *muon[4];
   
-//____________________________________Creating BackGround Tree______________________________________________ 
+//__________________________________Creating Signal Tree___________________________________//
 
-float jet1_pt, jet2_pt, jet3_pt, jet4_pt, jet5_pt, jet6_pt, bjet1_pt, sumbjet_pt, Scalar_HT, missing_ET, rat_MET_HT, top_mass;
+float jet1_pt, jet2_pt, jet3_pt, jet4_pt, jet5_pt, jet6_pt, bjet1_pt, sumbjet_pt;
+float Scalar_HT, missing_ET, rat_MET_HT, top_mass, siganl_weight;
 int numJets, numBJets;
-float deltaEta_jets, deltaPhi_jets, deltaEta_bjets, deltaPhi_bjets, deltaR_jets, deltaR_bjets, bkg_weight;
+float deltaEta_jets, deltaPhi_jets, deltaEta_bjets, deltaPhi_bjets, deltaR_jets, deltaR_bjets;
 
-//TTree *backgroundTree1 = new TTree("ttbarHBackground", "Tree for ttbarH background");
-//TTree *backgroundTree1 = new TTree("ttbarWBackground", "Tree for ttbarW background");
-TTree *backgroundTree1 = new TTree("ttbarZBackground", "Tree for ttbarZ background");
+TTree *signalTree = new TTree("SignalTree", "Tree for Four Top-W Signal");
 
-backgroundTree1->Branch("jet1_pt", &jet1_pt, "jet1_pt/F");
-backgroundTree1->Branch("jet2_pt", &jet2_pt, "jet2_pt/F");
-backgroundTree1->Branch("jet3_pt", &jet3_pt, "jet3_pt/F");
-backgroundTree1->Branch("jet4_pt", &jet4_pt, "jet4_pt/F");
-backgroundTree1->Branch("jet5_pt", &jet5_pt, "jet5_pt/F");
-backgroundTree1->Branch("jet6_pt", &jet6_pt, "jet6_pt/F");
+signalTree->Branch("siganl_weight", &siganl_weight, "siganl_weight/F");
+signalTree->Branch("jet1_pt", &jet1_pt, "jet1_pt/F");
+signalTree->Branch("jet2_pt", &jet2_pt, "jet2_pt/F");
+signalTree->Branch("jet3_pt", &jet3_pt, "jet3_pt/F");
+signalTree->Branch("jet4_pt", &jet4_pt, "jet4_pt/F");
+signalTree->Branch("jet5_pt", &jet5_pt, "jet5_pt/F");
+signalTree->Branch("jet6_pt", &jet6_pt, "jet6_pt/F");
+//signalTree->Branch("jet7_pt", &jet7_pt, "jet7_pt/F");
+//signalTree->Branch("jet8_pt", &jet8_pt, "jet8_pt/F");
+//signalTree->Branch("jet9_pt", &jet9_pt, "jet9_pt/F");
+//signalTree->Branch("jet10_pt", &jet10_pt, "jet10_pt/F");
 
-backgroundTree1->Branch("bjet1_pt", &bjet1_pt, "bjet1_pt/F");
-backgroundTree1->Branch("sumbjet_pt", &sumbjet_pt, "sumbjet_pt/F");
-backgroundTree1->Branch("Scalar_HT", &Scalar_HT, "Scalar_HT/F");
-backgroundTree1->Branch("missing_ET", &missing_ET, "missing_ET/F");
-backgroundTree1->Branch("rat_MET_HT", &rat_MET_HT, "rat_MET_HT/F");
+signalTree->Branch("numJets", &numJets, "numJets/I");
+signalTree->Branch("numBJets", &numBJets, "numBJets/I");
 
-backgroundTree1->Branch("numJets", &numJets, "numJets/I");
-backgroundTree1->Branch("numBJets", &numBJets, "numBJets/I");
+signalTree->Branch("bjet1_pt", &bjet1_pt, "bjet1_pt/F");
+signalTree->Branch("sumbjet_pt", &sumbjet_pt, "sumbjet_pt/F");
+signalTree->Branch("Scalar_HT", &Scalar_HT, "Scalar_HT/F");
+signalTree->Branch("missing_ET", &missing_ET, "missing_ET/F");
+signalTree->Branch("rat_MET_HT", &rat_MET_HT, "rat_MET_HT/F");
 
-backgroundTree1->Branch("deltaEta_jets", &deltaEta_jets, "deltaEta_jets/F");
-backgroundTree1->Branch("deltaPhi_jets", &deltaPhi_jets, "deltaPhi_jets/F");
-backgroundTree1->Branch("deltaEta_bjets", &deltaEta_bjets, "deltaEta_bjets/F");
-backgroundTree1->Branch("deltaPhi_bjets", &deltaPhi_bjets, "deltaPhi_bjets/F");
-backgroundTree1->Branch("deltaR_jets", &deltaR_jets, "deltaR_jets/F");
-backgroundTree1->Branch("deltaR_bjets", &deltaR_bjets, "deltaR_jets/F");
+signalTree->Branch("deltaEta_jets", &deltaEta_jets, "deltaEta_jets/F");
+signalTree->Branch("deltaPhi_jets", &deltaPhi_jets, "deltaPhi_jets/F");
+signalTree->Branch("deltaEta_bjets", &deltaEta_bjets, "deltaEta_bjets/F");
+signalTree->Branch("deltaPhi_bjets", &deltaPhi_bjets, "deltaPhi_bjets/F");
+signalTree->Branch("deltaR_jets", &deltaR_jets, "deltaR_jets/F");
+signalTree->Branch("deltaR_bjets", &deltaR_bjets, "deltaR_jets/F");
 
-backgroundTree1->Branch("top_mass", &top_mass, "top_mass/F");
+signalTree->Branch("top_mass", &top_mass, "top_mass/F");
 
-//backgroundTree1->Branch("ttbarH_weight", &bkg_weight, "ttbarHbkg_weight/F");
-//backgroundTree1->Branch("ttbarW_weight", &bkg_weight, "ttbarWbkg_weight/F");
-backgroundTree1->Branch("ttbarZ_weight", &bkg_weight, "ttbarZbkg_weight/F");
-
-//_______________________________________end of the Tree_______________________________________________
-
-  // Create histograms for B-Jets and Jets
+//____________________________________Create histograms____________________________________//
   TH1F *hPt_lBJet[1];
   hPt_lBJet[0] = new TH1F("b_jet_pt_0", "leading b-jets P_{T}", 50, 0.0, 500.0);
  
-  //BDT variables:  
+  TH1F *hweight = new TH1F("hweight_signal", "signal weight", 50, 0, 0.000001);
   TH1F *hM_wboson = new TH1F("hM_wboson", "W Boson Mass", 50, 0, 160);
   TH1F *hM_top = new TH1F("hM_top", "top Mass", 50, 50, 300);
   TH1F *hScalar_HT = new TH1F("Scalar_HT", "Scalar HT", 50, 0, 4000);
   TH1F *hN_jets = new TH1F("hN_jets", "Number of Jets", 12, 3, 16);
-  TH1F *hN_bjet = new TH1F("hN_bjet", "Number of b-jets", 9, 0, 8);
+  TH1F *hN_bjet = new TH1F("hN_bjet", "Number of bjets", 9, 0, 8);
   TH1F *hbjet_HT = new TH1F("bjets_HT", "Sum(Pt) of b-jets", 50, 0, 1500);
   TH1F *hMissing_ET = new TH1F("Missing_ET", "Missing ET", 50, 0, 400);
-  TH1F *hRatio_MET_HT = new TH1F("Ration_MET_HT", "Ratio MET ET", 30, 0, 10);
+  TH1F *hRatio_MET_HT = new TH1F("Ration_MET_HT", "Ratio MET HT", 30, 0, 10);
   
-  TH1F *hPt_lJet[6];
+  TH1F *hPt_lJet[10];
   hPt_lJet[0] = new TH1F("jet_pt_0", "leading jets P_{T}", 50, 0.0, 1000.0);
   hPt_lJet[1] = new TH1F("jet_pt_1", "2nd leading jet P_{T}", 50, 0.0, 1000.0);
   hPt_lJet[2] = new TH1F("jet_pt_2", "3rd leading jet P_{T}", 50, 0.0, 500.0);
   hPt_lJet[3] = new TH1F("jet_pt_3", "4th leading jet P_{T}", 50, 0.0, 500.0);
   hPt_lJet[4] = new TH1F("jet_pt_4", "5th leading jet P_{T}", 50, 0.0, 500.0);
   hPt_lJet[5] = new TH1F("jet_pt_5", "6th leading jet P_{T}", 50, 0.0, 500.0);
+  hPt_lJet[6] = new TH1F("jet_pt_6", "7th leading jet P_{T}", 50, 0.0, 500.0);
+  hPt_lJet[7] = new TH1F("jet_pt_7", "8th leading jet P_{T}", 50, 0.0, 500.0);
+  hPt_lJet[8] = new TH1F("jet_pt_8", "9th leading jet P_{T}", 50, 0.0, 500.0);
+  hPt_lJet[9] = new TH1F("jet_pt_9", "10th leading jet P_{T}", 50, 0.0, 500.0);
   
   TH1F *hdEta_jets = new TH1F("hdEta_jets", "Jets deltaEta", 20, -3.0, 3.0);
   TH1F *hdPhi_jets = new TH1F("hdphi_jets", "Jets deltaphi", 20, -4.0, 4.0);
@@ -127,69 +125,71 @@ backgroundTree1->Branch("ttbarZ_weight", &bkg_weight, "ttbarZbkg_weight/F");
   TH2F *hPt_jetcorr = new TH2F("hPt_jetcorr", "Jet correlation", 50, 0, 500, 50, 0, 500);
   TH2F *hPt_bjetcorr = new TH2F("hPt_bjetcorr", "B-Jet correlation", 50, 0, 500, 50, 0, 500);
   
-//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------//
     TLorentzVector v_lepton, v_lep1, v_lep2;
     Double_t leadingLeptonPT = 0.0;
     Double_t subleadingLeptonPT = 0.0;
     int n_events=0, n_cutjet=0, jetmul_cut=0, bjetmul_cut=0, n_HTcut=0, n_cutbjet=0;
-
+    
 //--------------------------------Loop over all events----------------------------------//
   for (Long64_t entry = 0; entry < numberOfEntries; ++entry)
   {
-    int n_jets=0, n_lbj=0, n_mbj=0, n_tbj=0;
     int numPlottedBJets = 0;
+    int n_jets=0, n_lbj=0, n_mbj=0, n_tbj=0;
     double HT_bjets=0, deltaPhi, ratio_MET_sqrtHT, HT, met;
     float dEta_ljets, dEta_lbjets, dEta_l1jets, dEta_l1bjets, dPhi_ljets, dPhi_lbjets, dPhi_l1jets, dPhi_l1bjets;
   
-  // Create a vector to store combined b-jets
-  std::vector<Jet*> bjets;
-  std::vector<Jet*> jets;
+    //Create a vector to store combined jets and b-jets
+    std::vector<Jet*> bjets;
+    std::vector<Jet*> jets;
   
-    // Load selected branches with data from the specified event
+    //Load selected branches with data from the specified event
     treeReader->ReadEntry(entry);
     
-    //weight
+    //Signal weight
     Weight *weight = (Weight*)branchWeight->At(0);
     if (!weight) continue;
-    //hweight->Fill(weight->Weight);
-    bkg_weight = (weight->Weight);
+    hweight->Fill(weight->Weight);
+    siganl_weight = (weight->Weight);
     
+    //Scalar HT
     ScalarHT *scalarHT = (ScalarHT*)branchScalarHT->At(0);
     if (!scalarHT) continue;
-    hScalar_HT->Fill(scalarHT->HT);
     HT = scalarHT->HT;
-    Scalar_HT = scalarHT->HT;
+    hScalar_HT->Fill(scalarHT->HT);
+    Scalar_HT = (scalarHT->HT);
     
-    //MET
+    //Missing ET
     MissingET *missingET = (MissingET*)branchMissingET->At(0);
     if(!missingET) continue;
     hMissing_ET->Fill(missingET->MET);
     met = missingET->MET;
-    missing_ET = missingET->MET;
+    missing_ET = (missingET->MET);
     
     //Ratio of the Missing ET with sqrt of HT
     ratio_MET_sqrtHT = met/TMath::Sqrt(HT);
     hRatio_MET_HT->Fill(ratio_MET_sqrtHT);
     rat_MET_HT = ratio_MET_sqrtHT;
     
-   //finding the correlation between the leading and subleading jets:
-   if (branchJet->GetEntries()>1)
-   {
-   Jet *jet1 = (Jet*)branchJet->At(0);
-   Jet *jet2 = (Jet*)branchJet->At(1);
-   hPt_jetcorr->Fill(jet1->PT, jet2->PT);
-   }
+    //correlation between leading and 1st subleading jets:
+    if (branchJet->GetEntries()>1)
+    {
+    Jet *jet1 = (Jet*)branchJet->At(0);
+    Jet *jet2 = (Jet*)branchJet->At(1);
+    hPt_jetcorr->Fill(jet1->PT, jet2->PT);
+    }
         
     //first 6 leading Jets:
-    if (branchJet->GetEntriesFast() >= 6)
+    if (branchJet->GetEntriesFast() >= 10)
     {
-    	for (Int_t j = 0; j < 6; ++j)
+    	for (Int_t j = 0; j < 10; ++j)
      	{
-     		//if (j == 0) continue;
-     		//{ 
-     		//	jet[j] = (Jet *)branchJet->At(j);
-     		//	hPt_lJet[j]->Fill(jet[j]->PT);
-     		//}
+     		/*if (j == 0) continue;
+     		{ 
+     			jet[j] = (Jet *)branchJet->At(j);
+     			hPt_lJet[j]->Fill(jet[j]->PT);
+     		}*/
+     		
      		jet[j] = (Jet *)branchJet->At(j);
      		hPt_lJet[j]->Fill(jet[j]->PT);
      	}
@@ -233,20 +233,21 @@ backgroundTree1->Branch("ttbarZ_weight", &bkg_weight, "ttbarZbkg_weight/F");
 //-------------------Loop over all jets in the event to find the b-jets-------------------//
     for (Int_t jetIndex = 0; jetIndex < branchJet->GetEntries(); ++jetIndex)
     {
-      // Access the jet
+      //Access the jet
       Jet *jet = (Jet *)branchJet->At(jetIndex);
       jets.push_back(jet);
-      n_jets++;     
+      n_jets++;
+         
       //loose b jets
       if (jet->BTag == 1)
       {
         n_lbj++;
         bjets.push_back(jet);
 
-        // Plot pT of the b-jet and store it in the array
+        //Plot pT of the b-jet and store it in the array
         if (numPlottedBJets < 1)
         {
-          hPt_lBJet[numPlottedBJets]->Fill(jet->PT);
+          //hPt_lBJet[numPlottedBJets]->Fill(jet->PT);
           ++numPlottedBJets;
         }
         //Sum of Pt of all b-jets
@@ -254,7 +255,7 @@ backgroundTree1->Branch("ttbarZ_weight", &bkg_weight, "ttbarZbkg_weight/F");
         sumbjet_pt = HT_bjets;
       }
     }
-    
+        
 //-------------------------------sort jets by Pt------------------------------//
     auto sortByPt= [](Jet* a, Jet* b){ return a->PT > b->PT; };
     std::sort(jets.begin(), jets.end(), sortByPt); 
@@ -264,7 +265,7 @@ backgroundTree1->Branch("ttbarZ_weight", &bkg_weight, "ttbarZbkg_weight/F");
     {
     float dEta_jets = (jets[0]->Eta - jets[1]->Eta);
     float dPhi_jets = (jets[0]->Phi - jets[1]->Phi);
-    float dR_jets = TMath::Sqrt(pow(dEta_jets,2) + pow(dPhi_jets,2));
+    float dR_jets = TMath::Sqrt(dEta_jets*dEta_jets + dPhi_jets*dPhi_jets);
     hdEta_jets->Fill(dEta_jets);
     hdPhi_jets->Fill(dPhi_jets);
     hdR_jets->Fill(dR_jets);
@@ -287,7 +288,7 @@ backgroundTree1->Branch("ttbarZ_weight", &bkg_weight, "ttbarZbkg_weight/F");
     deltaPhi_bjets = dPhi_bjets;
     deltaR_bjets = dR_bjets;
     
-    bjet1_pt = bjets[0]->PT;
+    bjet1_pt = (bjets[0]->PT);
     }
     
     //leading jets and b-jets
@@ -312,15 +313,25 @@ backgroundTree1->Branch("ttbarZ_weight", &bkg_weight, "ttbarZbkg_weight/F");
     hdR_l1j_l1bj->Fill(dR_l1j_l1bj);
     }
       
-      if(jets.size()>0 ) jet1_pt = jet[0]->PT;
-      if(jets.size()>1 ) jet2_pt = jets[1]->PT;
-      if(jets.size()>2 ) jet3_pt = jets[2]->PT;
-      if(jets.size()>3 ) jet4_pt = jets[3]->PT;
-      if(jets.size()>4 ) jet5_pt = jets[4]->PT;
-      if(jets.size()>5 ) jet6_pt = jets[5]->PT;
+    if(jets.size()>0) jet1_pt = (jets[0]->PT);
+    if(jets.size()>1) jet2_pt = (jets[1]->PT);
+    if(jets.size()>2) jet3_pt = (jets[2]->PT);
+    if(jets.size()>3) jet4_pt = (jets[3]->PT);
+    if(jets.size()>4) jet5_pt = (jets[4]->PT);
+    if(jets.size()>5) jet6_pt = (jets[5]->PT);
+    //if(jets.size()>6) jet7_pt = (jets[6]->PT);
+    //if(jets.size()>7) jet8_pt = (jets[7]->PT);
+    //if(jets.size()>8) jet9_pt = (jets[8]->PT);
+    //if(jets.size()>9) jet10_pt = (jets[9]->PT);
+    
+    hN_jets->Fill(n_jets);
+    numJets = n_jets;
+    hN_bjet->Fill(n_lbj);
+    numBJets = n_lbj;
+    hbjet_HT->Fill(HT_bjets);
       
-//---------------------------------applying cuts:---------------------------------//
-/*      if (scalarHT->HT > 1000)
+//------------------------------applying cuts:---------------------------------//
+      /*if (scalarHT->HT > 1000)
       {
       hScalar_HT->Fill(scalarHT->HT);
       Scalar_HT = (scalarHT->HT);
@@ -357,42 +368,31 @@ backgroundTree1->Branch("ttbarZ_weight", &bkg_weight, "ttbarZbkg_weight/F");
       numBJets = n_lbj;
       bjetmul_cut++;
       }
-*/      
-      hN_jets->Fill(n_jets);
-      numJets = n_jets;
-      hN_bjet->Fill(n_lbj);
-      numBJets = n_lbj;
-      hbjet_HT->Fill(HT_bjets);
+      */
+//-------------------------------output---------------------------------------//
+     
+    //cout<<"HT_bjets: "<<HT_bjets<<endl;
+    //cout<<"loose bjets: "<<n_lbj<<endl;
+    //cout<<"medium bjets: "<<n_mbj<<endl;
+    //cout<<"tight bjets: "<<n_tbj<<endl;
+    //cout<<"deltaPhi: "<<deltaPhi<<endl;
+    cout<<"Evenets: "<<entry<<endl;   
+      	
+    signalTree->Fill();
       
-      //cout<<"HT_bjets: "<<HT_bjets<<endl;
-      //cout<<"loose bjets: "<<n_lbj<<endl;
-      //cout<<"medium bjets: "<<n_mbj<<endl;
-      //cout<<"tight bjets: "<<n_tbj<<endl;
-      //cout<<"deltaPhi: "<<deltaPhi<<endl;
-      cout<<"Evenets: "<<entry<<endl;
-            
-      backgroundTree1->Fill();
-         
   }//end of for loop
-  
-  //-------------------------------output----------------------------------------//
+
+//-------------------------------output----------------------------------------//
   
     //cout<<"No. of events after cut on Jet Pt: "<<n_cutjet<<endl;
     //cout<<"No. of events after cut on bJet Pt: "<<n_cutbjet<<endl;
     //cout<<"No. of events after cut on Scalar HT: "<<n_HTcut<<endl;
     //cout<<"Jet multiplicity after cut: "<<jetmul_cut<<endl;
     //cout<<"bJet multiplicity after cut: "<<bjetmul_cut<<endl;
-  
 /* 
 //--------------------------------------------------------------------------------------------      
-  //TFile *rootFile = new TFile("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_pp_ttxH_bg_tttxtxwm/Events/run_01_decayed_1/ttbarH_bg_bdt_variables.root", "RECREATE");
-  //TFile *rootFile = new TFile("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_pp_ttxH_bg_tttxtxwm/Events/run_01_decayed_1/ttbarH_bg_kvariables_cut.root", "RECREATE");
-  
-  //TFile *rootFile = new TFile("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_pp_ttxwm_bg_tttxtxwm/Events/run_01_decayed_1/ttbarwm_bg_bdt_variables.root", "RECREATE");
-  //TFile *rootFile = new TFile("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_pp_ttxwm_bg_tttxtxwm/Events/run_01_decayed_1/ttbarwm_bg_kvariables_cut.root", "RECREATE");
-  
-  //TFile *rootFile = new TFile("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_pp_ttxz_bg_tttxtxwm/Events/run_01_decayed_1/ttbarz_bg_bdt_variables.root", "RECREATE");
-  TFile *rootFile = new TFile("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_pp_ttxz_bg_tttxtxwm/Events/run_01_decayed_1/ttbarz_bg_kvariables_cut.root", "RECREATE");
+  TFile *rootFile = new TFile("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_tttxtx_wminus_fullyHadronic_signal/Events/run_01_decayed_1/signal_bdt_variables.root", "RECREATE");
+  //TFile *rootFile = new TFile("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_tttxtx_wminus_fullyHadronic_signal/Events/run_01_decayed_1/signal_kvariables_cut.root", "RECREATE");
 
 
 //---------------------------------*Histograms Plotting*----------------------------------------
@@ -436,7 +436,7 @@ backgroundTree1->Branch("ttbarZ_weight", &bkg_weight, "ttbarZbkg_weight/F");
   hPt_lJet[5]->Draw("hist same");
   hPt_lJet[5]->SetStats(0);
   canvas1->Draw();
-  //canvas1->SaveAs("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_pp_ttxH_bg_tttxtxwm/analysis_code/bdt_plots/six_leading_subleading_jets.png");
+  //canvas1->SaveAs("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_tttxtx_wminus_fullyHadronic_signal/analysis_code/quarks_kinematics/bdt_plots/six_leading_subleading_jets.png");
   canvas1->Update();
   
   TCanvas *canvas2 = new TCanvas("myCanvas2", "BDT Variables N-jets and N-bjets", 800, 600);
@@ -452,7 +452,7 @@ backgroundTree1->Branch("ttbarZ_weight", &bkg_weight, "ttbarZbkg_weight/F");
   hN_bjet->Draw("hist");
   hN_bjet->SetStats(0);
   canvas2->Draw();
-  //canvas2->SaveAs("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_pp_ttxH_bg_tttxtxwm/analysis_code/bdt_plots/Njets_Nbjets.png");
+  //canvas2->SaveAs("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_tttxtx_wminus_fullyHadronic_signal/analysis_code/quarks_kinematics/bdt_plots/Njets_Nbjets.png");
   canvas2->Update();
   
   TCanvas *canvas3 = new TCanvas("myCanvas3", "BDT Variables", 800, 600);
@@ -468,6 +468,7 @@ backgroundTree1->Branch("ttbarZ_weight", &bkg_weight, "ttbarZbkg_weight/F");
   hbjet_HT->Draw("hist");
   hbjet_HT->SetStats(0);
   canvas3->cd(3);
+  
   hM_wboson->GetXaxis()->SetTitle("m_{w} [GeV]");
   hM_wboson->GetYaxis()->SetTitle("Normalized");
   hM_wboson->Draw("hist");
@@ -478,7 +479,8 @@ backgroundTree1->Branch("ttbarZ_weight", &bkg_weight, "ttbarZbkg_weight/F");
   hM_top->Draw("hist");
   hM_top->SetStats(0);
   canvas3->Draw();
-  //canvas3->SaveAs("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_pp_ttxH_bg_tttxtxwm/analysis_code/bdt_plots/reco_masses_scalarHT.png");
+  
+  //canvas3->SaveAs("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_tttxtx_wminus_fullyHadronic_signal/analysis_code/quarks_kinematics/bdt_plots/reco_masses_scalarHT.png");
   canvas3->Update();
 
   TCanvas *canvas4 = new TCanvas("myCanvas4", "BDT Variables bjets", 800, 600);
@@ -487,7 +489,7 @@ backgroundTree1->Branch("ttbarZ_weight", &bkg_weight, "ttbarZbkg_weight/F");
   hPt_lBJet[0]->Draw("hist");
   hPt_lBJet[0]->SetStats(0); 
   canvas4->Draw();
-  //canvas4->SaveAs("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_pp_ttxH_bg_tttxtxwm/analysis_code/bdt_plots/leading_bjets.png");
+  //canvas4->SaveAs("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_tttxtx_wminus_fullyHadronic_signal/analysis_code/quarks_kinematics/bdt_plots/leading_bjets.png");
   canvas4->Update();
   
   TCanvas *canvas5 = new TCanvas("myCanvas5", "BDT Variables jets", 800, 600);
@@ -514,7 +516,7 @@ backgroundTree1->Branch("ttbarZ_weight", &bkg_weight, "ttbarZbkg_weight/F");
   hdPhi_bjets->Draw();
   hdPhi_bjets->SetStats(0);
   canvas5->Draw();
-  //canvas5->SaveAs("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_pp_ttxH_bg_tttxtxwm/analysis_code/bdt_plots/delta_eta_phi_jets_bjets.png");
+  //canvas5->SaveAs("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_tttxtx_wminus_fullyHadronic_signal/analysis_code/quarks_kinematics/bdt_plots/delta_eta_phi_jets_bjets.png");
   canvas5->Update();
     
   TCanvas *canvas6 = new TCanvas("myCanvas6", "Correlation of Jets and BJets", 800, 600);
@@ -529,7 +531,7 @@ backgroundTree1->Branch("ttbarZ_weight", &bkg_weight, "ttbarZbkg_weight/F");
   hPt_bjetcorr->GetYaxis()->SetTitle("P_{t} [GeV]");
   hPt_bjetcorr->Draw("COLZ");
   hPt_bjetcorr->SetStats(0);
-  //canvas6->SaveAs("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_pp_ttxH_bg_tttxtxwm/analysis_code/bdt_plots/correlation_jets_bjets.png"); 
+  //canvas6->SaveAs("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_tttxtx_wminus_fullyHadronic_signal/analysis_code/quarks_kinematics/bdt_plots/correlation_jets_bjets.png"); 
   canvas6->Update();
   
   TCanvas *canvas7 = new TCanvas("myCanvas7", "#DeltaR Jets", 800, 600);
@@ -537,60 +539,88 @@ backgroundTree1->Branch("ttbarZ_weight", &bkg_weight, "ttbarZbkg_weight/F");
   hdR_jets->GetYaxis()->SetTitle("Events");
   hdR_jets->Draw("hist");
   hdR_jets->SetStats(0);
+  //canvas7->SaveAs("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_tttxtx_wminus_fullyHadronic_signal/analysis_code/quarks_kinematics/bdt_plots/deltaR_leading_subleading_jets.png");
+  canvas7->Update();
   
   TCanvas *canvas8 = new TCanvas("myCanvas8", "#DeltaR B-Jets", 800, 600);
   hdR_bjets->GetXaxis()->SetTitle("#DeltaR_{bj,bj1}");
   hdR_bjets->GetYaxis()->SetTitle("Events");
   hdR_bjets->Draw("hist");
   hdR_bjets->SetStats(0);
+  //canvas8->SaveAs("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_tttxtx_wminus_fullyHadronic_signal/analysis_code/quarks_kinematics/bdt_plots/deltaR_leading_subleading_jets.png");
+  canvas8->Update();
   
   TCanvas *canvas9 = new TCanvas("myCanvas9", "#DeltaEta", 800, 600);
   hdEta_lj_lbj->GetXaxis()->SetTitle("#DeltaEta_{lj,lbj}");
   hdEta_lj_lbj->GetYaxis()->SetTitle("Events");
   hdEta_lj_lbj->Draw("hist");
   hdEta_lj_lbj->SetStats(0);
+  //canvas9->SaveAs("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_tttxtx_wminus_fullyHadronic_signal/analysis_code/quarks_kinematics/bdt_plots/deltaEta_ljets_lbjets.png");
+  canvas9->Update();
   
   TCanvas *canvas10 = new TCanvas("myCanvas10", "#DeltaEta", 800, 600);
   hdEta_l1j_l1bj->GetXaxis()->SetTitle("#DeltaEta_{l1j,l1bj}");
   hdEta_l1j_l1bj->GetYaxis()->SetTitle("Events");
   hdEta_l1j_l1bj->Draw("hist");
   hdEta_l1j_l1bj->SetStats(0);
+  //canvas10->SaveAs("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_tttxtx_wminus_fullyHadronic_signal/analysis_code/quarks_kinematics/bdt_plots/deltaEta_subleadjet_subleadbjets.png");
+  canvas10->Update();
   
   TCanvas *canvas11 = new TCanvas("myCanvas11", "#DeltaPhi", 800, 600);
   hdPhi_lj_lbj->GetXaxis()->SetTitle("#DeltaPhi_{lj,lbj}");
   hdPhi_lj_lbj->GetYaxis()->SetTitle("Events");
   hdPhi_lj_lbj->Draw("hist");
   hdPhi_lj_lbj->SetStats(0);
+  //canvas11->SaveAs("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_tttxtx_wminus_fullyHadronic_signal/analysis_code/quarks_kinematics/bdt_plots/deltaPhi_ljets_lbjets.png");
+  canvas11->Update();
   
   TCanvas *canvas12 = new TCanvas("myCanvas12", "#DeltaPhi", 800, 600);
   hdPhi_l1j_l1bj->GetXaxis()->SetTitle("#DeltaPhi_{l1j,l1bj}");
   hdPhi_l1j_l1bj->GetYaxis()->SetTitle("Events");
   hdPhi_l1j_l1bj->Draw("hist");
-  hdPhi_l1j_l1bj->SetStats(0);
+  hdPhi_lj_lbj->SetStats(0);
+  //canvas12->SaveAs("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_tttxtx_wminus_fullyHadronic_signal/analysis_code/quarks_kinematics/bdt_plots/deltaPhi_subleadjets_subleadbjets.png");
+  canvas12->Update();
   
   TCanvas *canvas13 = new TCanvas("myCanvas13", "#DeltaR", 800, 600);
   hdR_lj_lbj->GetXaxis()->SetTitle("#DeltaR_{lj,lbj}");
   hdR_lj_lbj->GetYaxis()->SetTitle("Events");
   hdR_lj_lbj->Draw("hist");
   hdR_lj_lbj->SetStats(0);
+  //canvas13->SaveAs("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_tttxtx_wminus_fullyHadronic_signal/analysis_code/quarks_kinematics/bdt_plots/deltaR_ljets_lbjets.png");
+  canvas13->Update();
   
   TCanvas *canvas14 = new TCanvas("myCanvas14", "#DeltaR", 800, 600);
   hdR_l1j_l1bj->GetXaxis()->SetTitle("#DeltaR_{l1j,l1bj}");
   hdR_l1j_l1bj->GetYaxis()->SetTitle("Events");
   hdR_l1j_l1bj->Draw("hist");
   hdR_l1j_l1bj->SetStats(0);
+  //canvas14->SaveAs("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_tttxtx_wminus_fullyHadronic_signal/analysis_code/quarks_kinematics/bdt_plots/deltaR_subleadjets_subleadbjets.png");
+  canvas14->Update();
   
   TCanvas *canvas15 = new TCanvas("myCanvas15", "#MissingET", 800, 600);
   hMissing_ET->GetXaxis()->SetTitle("MET");
   hMissing_ET->GetYaxis()->SetTitle("Events");
   hMissing_ET->Draw("hist");
   hMissing_ET->SetStats(0);
+  //canvas15->SaveAs("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_tttxtx_wminus_fullyHadronic_signal/analysis_code/quarks_kinematics/bdt_plots/MissingET.png");
+  canvas15->Update();
   
   TCanvas *canvas16 = new TCanvas("myCanvas16", "#Ratio MET HT", 800, 600);
   hRatio_MET_HT->GetXaxis()->SetTitle("MET/\\sqrt{HT}");
   hRatio_MET_HT->GetYaxis()->SetTitle("Events");
   hRatio_MET_HT->Draw("hist");
   hRatio_MET_HT->SetStats(0);
+  //canvas16->SaveAs("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_tttxtx_wminus_fullyHadronic_signal/analysis_code/quarks_kinematics/bdt_plots/Ratio_MET_HT.png");
+  canvas16->Update();
+  
+  TCanvas *canvas17 = new TCanvas("myCanvas17", "Weight", 800, 600);
+  hweight->GetXaxis()->SetTitle("weight");
+  hweight->GetYaxis()->SetTitle("Events");
+  hweight->Draw("hist");
+  hweight->SetStats(0);
+  //canvas1t->SaveAs("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_tttxtx_wminus_fullyHadronic_signal/analysis_code/quarks_kinematics/bdt_plots/weight.png");
+  canvas17->Update();
  
   hPt_lJet[0]->Write();
   hPt_lJet[1]->Write();
@@ -625,15 +655,18 @@ backgroundTree1->Branch("ttbarZ_weight", &bkg_weight, "ttbarZbkg_weight/F");
   
   hPt_jetcorr->Write();
   hPt_bjetcorr->Write();
+  
   hM_wboson->Write();
-  hM_top->Write();
-     
-  rootFile->Close(); 
+  hM_top->Write();  
+  rootFile->Close();  
 */
-  TFile *outputFile1 = new TFile("/home/msahil/work/root-6.20.08/tutorials/tmva/files/ttbarZ_tree.root", "RECREATE");
-  backgroundTree1->Write();
-  outputFile1->Close();
+//TFile *outputFile1 = new TFile("/home/msahil/work/madgraph/MG5_aMC_v2_9_15/template_tttxtx_wminus_fullyHadronic_signal/Events/run_01_decayed_1/cutTTree_fourtopw_siganl.root", "RECREATE");
+//signalTree->Write();
+//outputFile1->Close();
+
+TFile *outputFile1 = new TFile("/home/msahil/work/root-6.20.08/tutorials/tmva/files/tmva_fourtop_wboson_sbtrees.root", "RECREATE");
+signalTree->Write();
+outputFile1->Close();
 
 }
-
 
