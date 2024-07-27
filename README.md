@@ -34,6 +34,6 @@ madspin = ON
 # Go to the Delphes directory
 # To reconstruct different high-level objects (electrons, muons, jets, b-tag jets, missing energy) in a given experiment of the collider use:
 
-./DelphesHepMC cards/delphes_card_CMS.tcl path/to/directory/output_file.root path/to/directory/pythia8_events.hepmc
+````./DelphesHepMC cards/delphes_card_CMS.tcl path/to/directory/output_file.root path/to/directory/pythia8_events.hepmc```
 # Write a code (c++/python) with the help of examples in the example directory to analyze the output of the Delphes.
 
