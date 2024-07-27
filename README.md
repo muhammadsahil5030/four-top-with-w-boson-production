@@ -5,7 +5,7 @@ The detector effects are added using the Delphes modular framework.
 Multivariate analysis is performed using BDT.
 
 ## Signal Generation at MadGraph Level
-'''plaintext
+```
 MG5_aMC> generate p p > t t~ t t~ w- [NLO]
 MG5_aMC> output fourtop_wminus
 MG5_aMC> launch
@@ -21,14 +21,14 @@ madspin = ON
    344.00  = dsqrt_q2fact2  ! fixed fact scale for pdf2
    False  = use_syst
 
-3) madspin_card.dat changes:
+2) madspin_card.dat changes:
    decay t > w+ b, w+ > all all
    decay t~ > w- b~, w- > all all
    decay w+ > all all
    decay w- > all all
    decay z > all all
    select your final state instead of all.
-   '''
+```
 **Detector Simulation**
 # Detector simulation is performed using the Delphes Modular framework.
 # Go to the Delphes directory
