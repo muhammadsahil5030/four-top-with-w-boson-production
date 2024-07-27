@@ -16,7 +16,7 @@ install pythia8
 install mg5amc_py8_interface
 install Delphes #it is recommended to install Delphes externally
 ```
-###### Installing Delphes:
+Installing Delphes:
 ```
 wget http://cp3.irmp.ucl.ac.be/downloads/Delphes-3.2.0.tar.gz
 tar -xf Delphes-3.2.0.tar.gz
