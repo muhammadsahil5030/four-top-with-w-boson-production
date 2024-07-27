@@ -1,11 +1,11 @@
 # four-top-with-w-boson-production
-# This repository contains all the analysis codes of the four top in association with w boson.
-# First, the data is analyzed at the MadGraph level.
-# The detector effects are added using the Delphes modular framework. 
-# Multivariate analysis is performed using BDT.
+This repository contains all the analysis codes of the four top in association with w boson.
+First, the data is analyzed at the MadGraph level.
+The detector effects are added using the Delphes modular framework. 
+Multivariate analysis is performed using BDT.
 
-**Signal Generation at MadGraph Level:**
-
+## Signal Generation at MadGraph Level
+'''plaintext
 MG5_aMC> generate p p > t t~ t t~ w- [NLO]
 MG5_aMC> output fourtop_wminus
 MG5_aMC> launch
@@ -27,8 +27,8 @@ madspin = ON
    decay w+ > all all
    decay w- > all all
    decay z > all all
-   #select your final state instead of all.
-
+   select your final state instead of all.
+   '''
 **Detector Simulation**
 # Detector simulation is performed using the Delphes Modular framework.
 # Go to the Delphes directory
