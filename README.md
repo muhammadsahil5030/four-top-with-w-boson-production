@@ -21,6 +21,13 @@ Installing Delphes:
 wget http://cp3.irmp.ucl.ac.be/downloads/Delphes-3.2.0.tar.gz
 tar -xf Delphes-3.2.0.tar.gz
 cd Delphes-3.2.0/
+```
+#for lxplus user
+```
+source /afs/cern.ch/sw/lcg/external/gcc/4.9.3/x86_64-slc6/setup.sh
+source /afs/cern.ch/sw/lcg/app/releases/ROOT/6.06.00/x86_64-slc6-gcc49-opt/root/bin/thisroot.sh
+````
+```
 make
 ```
 ## Signal Generation at MadGraph Level
